@@ -1,5 +1,96 @@
 # maxJack
 
+A Python project simulating a simplified version of Blackjack, called "Max Jack." This game and its analysis tools provide a fun way to play and study the odds and strategies of a four-hand Blackjack variant.
+
+## Features
+- Play a simplified Blackjack game (`maxJack.py`)
+- Simulate and analyze winning hand frequencies (`findingBasicStrategy.py`)
+- Calculate expected value (EV) and game statistics (`findingEV.py`)
+- Shared utility functions in `util.py` for consistency and maintainability
+
+## Requirements
+- Python 3.7 or higher
+- No external dependencies (uses only Python standard library)
+
+## Installation
+Clone the repository:
+```bash
+git clone https://github.com/jhschiff/maxJack.git
+cd maxJack
+```
+
+## How to Play (maxJack.py)
+Run the game in your terminal:
+```bash
+python maxJack.py
+```
+You will be presented with four hands, each showing two cards and one hidden card. Choose a hand to play by entering 1, 2, 3, or 4. The game will reveal all cards, calculate the values, and tell you if you win, lose, or push. Payouts are 3/2 for a win.
+
+**Example Output:**
+```
+Welcome to Max Jack!
+Hand 1: 7, 5, <card hidden>
+Hand 2: 10, 2, <card hidden>
+Hand 3: Q, 3, <card hidden>
+Hand 4: 6, 6, <card hidden>
+Choose a Hand: 2
+Hand 1: 7, 5, 8  | Value: 20
+Hand 2: 10, 2, 9  | Value: 21
+Hand 3: Q, 3, 4  | Value: 17
+Hand 4: 6, 6, 7  | Value: 19
+Result: Win! (+1.5)
+You ended: 1.5
+```
+
+## Analysis Tools
+
+### findingBasicStrategy.py
+Simulates many games to analyze the frequency of winning combinations for the initial two cards in each hand.
+
+**How to run:**
+```bash
+python findingBasicStrategy.py
+```
+**Output:**
+- Prints the most frequent winning pairs and their frequencies (top 10).
+
+### findingEV.py
+Simulates many games to calculate the expected value (EV) of playing Max Jack using a basic strategy.
+
+**How to run:**
+```bash
+python findingEV.py [num_simulations]
+```
+- `num_simulations` (optional): Number of games to simulate (default: 1,000,000)
+
+**Output:**
+- Prints the number of runs, wins, losses, pushes, total value, and the EV.
+
+## Shared Utilities
+
+### util.py
+This module contains shared constants and functions used by all scripts:
+- `RANKS`, `SUITS`: Card constants
+- `create_deck()`: Create and shuffle a deck (tuple or string cards)
+- `hand_value()`: Calculate the value of a hand, handling Aces as 1 or 11
+
+Import these utilities in your scripts to avoid code duplication and ensure consistency.
+
+## Project Structure
+- `maxJack.py` — Play the Max Jack game interactively.
+- `findingBasicStrategy.py` — Analyze and print the most frequent winning starting hands.
+- `findingEV.py` — Calculate and print the expected value and statistics for the game.
+- `util.py` — Shared utility functions and constants.
+
+## Contributing
+Contributions are welcome! Please open an issue or submit a pull request for improvements or bug fixes.
+
+## License
+MIT License (add your LICENSE file if needed)
+
+## Contact
+Created by Jordan Schiff. For questions, open an issue or contact via GitHub.
+
 "Max Jack" is a simplified version of the popular card game Blackjack. The game is played against the dealer, with the objective of achieving a hand value as close to 21 as possible without exceeding it. Players can choose one of four hands to play during each round.
 
 How to Play:
