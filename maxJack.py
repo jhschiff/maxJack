@@ -7,40 +7,10 @@ Play against the dealer by choosing one of four hands, each with two visible car
 Usage:
     python maxJack.py
 """
-import random
-from typing import List, Tuple
+from typing import Tuple
+from util import create_deck, hand_value
 
-RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-SUITS = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-
-
-def create_deck() -> List[Tuple[str, str]]:
-    """Create and shuffle a standard deck of 52 cards."""
-    deck = [(rank, suit) for rank in RANKS for suit in SUITS]
-    random.shuffle(deck)
-    return deck
-
-
-def card_value(card: Tuple[str, str]) -> int:
-    """Return the value of a card in Blackjack."""
-    rank = card[0]
-    if rank in ['J', 'Q', 'K']:
-        return 10
-    elif rank == 'A':
-        return 11
-    else:
-        return int(rank)
-
-
-def hand_value(hand: List[Tuple[str, str]]) -> int:
-    """Return the total value of a hand of cards."""
-    value = sum(card_value(card) for card in hand)
-    num_aces = sum(1 for card in hand if card[0] == 'A')
-    while value > 21 and num_aces:
-        value -= 10
-        num_aces -= 1
-    return value
-
+Card = Tuple[str, str]
 
 def choose_winning_hand(
     action: int,
@@ -74,7 +44,7 @@ def choose_winning_hand(
 
 def blackjack() -> float:
     """Play a round of Max Jack. Returns the payout for the round."""
-    deck = create_deck()
+    deck = create_deck(tuple_cards=True)
     hands = [[deck.pop(), deck.pop(), deck.pop()] for _ in range(4)]
 
     # Show two cards for each hand

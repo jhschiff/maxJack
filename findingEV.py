@@ -10,8 +10,7 @@ If no argument is given, defaults to 1,000,000 simulations.
 import random
 import sys
 from typing import List, Optional
-
-RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+from util import create_deck, hand_value
 
 # List of all possible starting pairs for hands (used for strategy selection)
 hands = [
@@ -28,30 +27,6 @@ hands = [
     ['2', '2'], ['10', '10'], ['Q', 'Q'], ['10', 'Q'], ['K', 'K'], ['10', 'K'], ['J', 'J'], ['Q', 'K'],
     ['J', 'K'], ['J', 'Q'], ['10', 'J']
 ]
-
-def create_deck() -> List[str]:
-    """Create and shuffle a standard deck of 52 cards."""
-    deck = RANKS * 4
-    random.shuffle(deck)
-    return deck
-
-def card_value(card: str) -> int:
-    """Return the value of a card in Blackjack."""
-    if card in ['J', 'Q', 'K']:
-        return 10
-    elif card == 'A':
-        return 11
-    else:
-        return int(card)
-
-def hand_value(hand: List[str]) -> int:
-    """Return the total value of a hand of cards."""
-    value = sum(card_value(card) for card in hand)
-    num_aces = sum(1 for card in hand if card == 'A')
-    while value > 21 and num_aces:
-        value -= 10
-        num_aces -= 1
-    return value
 
 def find_pair_index(target_pair: List[str]) -> Optional[int]:
     """Find the index of a specified pair in the hands list, regardless of order."""

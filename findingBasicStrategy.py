@@ -5,41 +5,10 @@ based on a large number of simulated games. It prints the top 10 most frequent w
 Usage:
     python findingBasicStrategy.py
 """
-import random
 from typing import List, Dict, Tuple
+from util import create_deck, hand_value, RANKS
 
-# Symmetry adjustment constant for pairs (explained in README)
 PAIR_SYMMETRY_MULTIPLIER = 2.6710816777  # Adjusts for the probability of identical card pairs
-
-RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-
-
-def create_deck() -> List[str]:
-    """Create a standard deck of 52 cards and shuffle it."""
-    deck = RANKS * 4
-    random.shuffle(deck)
-    return deck
-
-
-def card_value(card: str) -> int:
-    """Return the value of a card in Blackjack."""
-    if card in ['J', 'Q', 'K']:
-        return 10
-    elif card == 'A':
-        return 11
-    else:
-        return int(card)
-
-
-def hand_value(hand: List[str]) -> int:
-    """Return the total value of a hand of cards."""
-    value = sum(card_value(card) for card in hand)
-    num_aces = sum(1 for card in hand if card == 'A')
-    while value > 21 and num_aces:
-        value -= 10
-        num_aces -= 1
-    return value
-
 
 def choose_winning_hand(
     hand1_val: int, hand2_val: int, hand3_val: int, hand4_val: int,
@@ -61,7 +30,6 @@ def choose_winning_hand(
     if hand4_val == max_val:
         basic[(hand4[0], hand4[1])] += 1
 
-
 def blackjack(basic: Dict[Tuple[str, str], int]) -> None:
     """Simulate a single game and update the basic frequency dictionary."""
     deck = create_deck()
@@ -76,7 +44,6 @@ def blackjack(basic: Dict[Tuple[str, str], int]) -> None:
     hand4_val = hand_value(hand4)
 
     choose_winning_hand(hand1_val, hand2_val, hand3_val, hand4_val, hand1, hand2, hand3, hand4, basic)
-
 
 def main():
     """Run the simulation and print the top 10 most frequent winning pairs."""
@@ -102,7 +69,6 @@ def main():
     print("-" * 25)
     for (combo, count) in sorted_pairs[:10]:
         print(f"{combo[0]}, {combo[1]:<4} | {count:10.0f}")
-
 
 if __name__ == "__main__":
     main()
