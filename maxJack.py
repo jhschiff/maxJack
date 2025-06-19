@@ -1,14 +1,27 @@
-import random
+"""
+maxJack.py
 
-def create_deck():
-    """Create a standard deck of 52 cards."""
-    ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-    deck = [(rank, suit) for rank in ranks for suit in suits]
+A command-line game simulating a simplified version of Blackjack (Max Jack).
+Play against the dealer by choosing one of four hands, each with two visible cards and one hidden card.
+
+Usage:
+    python maxJack.py
+"""
+import random
+from typing import List, Tuple
+
+RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+SUITS = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+
+
+def create_deck() -> List[Tuple[str, str]]:
+    """Create and shuffle a standard deck of 52 cards."""
+    deck = [(rank, suit) for rank in RANKS for suit in SUITS]
     random.shuffle(deck)
     return deck
 
-def card_value(card):
+
+def card_value(card: Tuple[str, str]) -> int:
     """Return the value of a card in Blackjack."""
     rank = card[0]
     if rank in ['J', 'Q', 'K']:
@@ -18,7 +31,8 @@ def card_value(card):
     else:
         return int(rank)
 
-def hand_value(hand):
+
+def hand_value(hand: List[Tuple[str, str]]) -> int:
     """Return the total value of a hand of cards."""
     value = sum(card_value(card) for card in hand)
     num_aces = sum(1 for card in hand if card[0] == 'A')
@@ -27,94 +41,94 @@ def hand_value(hand):
         num_aces -= 1
     return value
 
-def choose_winning_hand(action, hand1_val, hand2_val, hand3_val, hand4_val):
-    """Determine the winning hand based on the chosen action."""
-    max_val = -1
-    if hand1_val <= 21:
-        max_val = hand1_val
-    if hand2_val <= 21:
-        max_val = max(max_val, hand2_val)
-    if hand3_val <= 21:
-        max_val = max(max_val, hand3_val)
-    if hand4_val <= 21:
-        max_val = max(max_val, hand4_val)
-    
+
+def choose_winning_hand(
+    action: int,
+    hand1_val: int,
+    hand2_val: int,
+    hand3_val: int,
+    hand4_val: int
+) -> int:
+    """
+    Determine the winning hand based on the chosen action.
+    Returns:
+        1.5 if player wins, 0 if push, -1 if lose.
+    """
+    max_val = max([v for v in [hand1_val, hand2_val, hand3_val, hand4_val] if v <= 21], default=-1)
     if max_val == -1:
         print("All Busts, Dealer Win")
         return -1
-    
+
     max_val_count = sum(val == max_val for val in [hand1_val, hand2_val, hand3_val, hand4_val])
 
-    if action == '1':
-        if hand1_val == max_val:
-            if max_val_count > 1:
-                return 0
-            return 1
-    elif action == '2':
-        if hand2_val == max_val:
-            if max_val_count > 1:
-                return 0
-            return 1
-    elif action == '3':
-        if hand3_val == max_val:
-            if max_val_count > 1:
-                return 0
-            return 1
-    elif action == '4':
-        if hand4_val == max_val:
-            if max_val_count > 1:
-                return 0
-            return 1
+    if action == 1 and hand1_val == max_val:
+        return 0 if max_val_count > 1 else 1.5
+    elif action == 2 and hand2_val == max_val:
+        return 0 if max_val_count > 1 else 1.5
+    elif action == 3 and hand3_val == max_val:
+        return 0 if max_val_count > 1 else 1.5
+    elif action == 4 and hand4_val == max_val:
+        return 0 if max_val_count > 1 else 1.5
     return -1
 
-def blackjack():
-    """Play a game of Blackjack."""
+
+def blackjack() -> float:
+    """Play a round of Max Jack. Returns the payout for the round."""
     deck = create_deck()
-    hand1 = [deck.pop(), deck.pop(), deck.pop()]
-    hand2 = [deck.pop(), deck.pop(), deck.pop()]
-    hand3 = [deck.pop(), deck.pop(), deck.pop()]
-    hand4 = [deck.pop(), deck.pop(), deck.pop()]
+    hands = [[deck.pop(), deck.pop(), deck.pop()] for _ in range(4)]
 
-    print(f"Hand 1: {hand1[0][0]}, {hand1[1][0]}, <card hidden>")
-    print(f"Hand 2: {hand2[0][0]}, {hand2[1][0]}, <card hidden>")
-    print(f"Hand 3: {hand3[0][0]}, {hand3[1][0]}, <card hidden>")
-    print(f"Hand 4: {hand4[0][0]}, {hand4[1][0]}, <card hidden>\n")
-    
-    # Player's turn
-    action = input("Chose a Hand: ").lower()
+    # Show two cards for each hand
+    print("\nYour Hands:")
+    for i, hand in enumerate(hands, 1):
+        print(f"  Hand {i}: {hand[0][0]}, {hand[1][0]}, <card hidden>")
+    print()
 
-    hand1_val = hand_value(hand1)
-    hand2_val = hand_value(hand2)
-    hand3_val = hand_value(hand3)
-    hand4_val = hand_value(hand4)
-    
-    print(f"Hand 1: {hand1[0][0]}, {hand1[1][0]}, {hand1[2][0]}, Value: {hand1_val}")
-    print(f"Hand 2: {hand2[0][0]}, {hand2[1][0]}, {hand2[2][0]}, Value: {hand2_val}")
-    print(f"Hand 3: {hand3[0][0]}, {hand3[1][0]}, {hand3[2][0]}, Value: {hand3_val}")
-    print(f"Hand 4: {hand4[0][0]}, {hand4[1][0]}, {hand4[2][0]}, Value: {hand4_val}\n")
-    
-    win = choose_winning_hand(action, hand1_val, hand2_val, hand3_val, hand4_val)
+    # Get and validate user input
+    while True:
+        action_input = input("Choose a Hand (1-4): ").strip()
+        if action_input in {'1', '2', '3', '4'}:
+            action = int(action_input)
+            break
+        print("Invalid input. Please enter 1, 2, 3, or 4.")
 
-    if win == 1:
-        print("Win\n")
-        return 1.5
-    elif win == 0:
-        print("Push\n")
-        return 0
+    # Reveal all hands and values
+    print("\nRevealing all hands:")
+    for i, hand in enumerate(hands, 1):
+        val = hand_value(hand)
+        print(f"  Hand {i}: {hand[0][0]}, {hand[1][0]}, {hand[2][0]}  | Value: {val}")
+    print()
+
+    # Determine result
+    hand_vals = [hand_value(hand) for hand in hands]
+    result = choose_winning_hand(action, *hand_vals)
+    if result == 1.5:
+        print("Result: Win! (+1.5)")
+    elif result == 0:
+        print("Result: Push (tie)")
     else:
-        print("Lose\n")
-        return -1
-    
-if __name__ == "__main__":
+        print("Result: Lose (-1)")
+    print()
+    return result
+
+
+def main() -> None:
+    """Main game loop for Max Jack."""
     print("Welcome to Max Jack!\n")
-
-    cont = input("Press P to play or Q to quit\n").lower()
-    val = 0
-
-    while (cont != "q"):
+    val = 0.0
+    while True:
         val += blackjack()
-        cont = input("Press P to play or Q to quit\n").lower()
-    
-    print("You ended: ", val)
+        while True:
+            cont = input("Press Enter to play again or Q to quit: ").strip().lower()
+            if cont == 'q':
+                print(f"\nYou ended: {val}")
+                return
+            elif cont == '':
+                break
+            else:
+                print("Invalid input. Press Enter to play again or Q to quit.")
+
+
+if __name__ == "__main__":
+    main()
     
 
